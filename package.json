@@ -3,27 +3,80 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "setup": "yarn clean:remove && yarn install --ignore-engines && npx pod-install",
+    "postinstall": "npx jetify",
+    "shake": "~/Library/Android/sdk/platform-tools/adb shell input keyevent 82",
+    "adb": "~/Library/Android/sdk/platform-tools/adb reverse tcp:8081 tcp:8081",
+    "lint": "eslint .",
+    "test": "jest --verbose",
+    "jest:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "flow": "flow",
+    "flow-stop": "flow stop",
+    "build:ios": "react-native bundle --entry-file='index.ios.js' --bundle-output='./ios//main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
+    "build:android": "react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
+    "build:apk:debug": "./android/gradlew --stop && npx jetify && cd android && ./gradlew clean bundleDebugJsAndAssets copyDebugBundledJs assembleDebug && cd ..",
+    "build:apk:staging": "./android/gradlew --stop && npx jetify && cd android && ./gradlew clean bundleStagingJsAndAssets copyStagingBundledJs assembleStaging && cd ..",
+    "build:apk:release": "./android/gradlew --stop && npx jetify && cd android && ./gradlew clean bundleReleaseJsAndAssets copyReleaseBundledJs assembleRelease && cd ..",
+    "clean": "react-native start –reset-cache",
+    "ios:8": "react-native run-ios --simulator='iPhone 8'",
     "ios": "react-native run-ios",
-    "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "ios:device": "react-native run-ios --device --scheme ''",
+    "android": "react-native run-android",
+    "android:clean": "./android/gradlew --stop && cd android && ./gradlew clean && cd .. && npx jetify && react-native run-android",
+    "clean:android": "./android/gradlew --stop && cd android && ./gradlew clean && cd .. && npx jetify",
+    "clean:remove": "rm -rf node_modules/ && rm -rf ios/Pods/ && rm -rf android/app/build && watchman watch-del-all && rm -rf ios/build && rm -rf ~/Library/Developer/Xcode/DerivedData",
+    "build": "rm -rf dist/ && webpack --mode=production --config webpack.config.js",
+    "web": "react-scripts start"
   },
   "dependencies": {
     "react": "18.1.0",
-    "react-native": "0.70.6"
+    "react-native": "0.70.6",
+    "jetifier": "2.0.0",
+    "react-dom": "18.1.0",
+    "react-native-web": "0.18.10",
+    "react-scripts": "5.0.1",
+    "web-vitals": "3.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/runtime": "^7.12.5",
-    "@react-native-community/eslint-config": "^2.0.0",
-    "babel-jest": "^26.6.3",
-    "eslint": "^7.32.0",
-    "jest": "^26.6.3",
+    "@babel/core": "7.12.9",
+    "@babel/runtime": "7.12.5",
+    "@react-native-community/eslint-config": "2.0.0",
+    "@tsconfig/react-native": "2.0.2",
+    "@types/jest": "26.0.23",
+    "@types/react": "18.0.21",
+    "@types/react-native": "0.70.6",
+    "@types/react-test-renderer": "18.0.0",
+    "@typescript-eslint/eslint-plugin": "5.37.0",
+    "@typescript-eslint/parser": "5.37.0",
+    "babel-jest": "26.6.3",
+    "eslint": "7.32.0",
+    "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.72.3",
-    "react-test-renderer": "18.1.0"
+    "react-test-renderer": "18.1.0",
+    "typescript": "4.8.3"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
